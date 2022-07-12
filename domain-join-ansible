@@ -1,0 +1,32 @@
+---
+  - name: "Playing with Ansible and Git"
+    hosts: localhost
+    connection: local
+    gather_facts: no
+    become: yes
+    become_method: sudo
+    vars_prompt:
+     - name: "bind_password"
+       prompt: "Password for ravicketha@ketha.com"
+       private: yes
+
+    tasks:
+
+    - name : Install multiple packages
+      yum:
+       name:
+        - sssd
+        - realmd
+        - oddjob
+        - oddjob-mkhomedir
+        - adcli
+        - samba-common
+        - samba-common-tools
+        - krb5-workstation
+        - openldap-clients
+        - policycoreutils-python
+    - name: Run command
+      expect:
+        command: realm join --user=ravicketha ketha.com
+        responses:
+          Password for *: "{{ bind_password }}"
